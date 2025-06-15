@@ -1,0 +1,60 @@
+.effectStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 16px;
+  background: var(--panel-bg);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  color: var(--fg);
+  font-family: var(--font);
+  width: 100%;
+  max-width: 800px;
+  margin: 16px auto;
+  box-sizing: border-box;
+}
+
+.section {
+  flex: 1 1 280px;
+}
+
+.effectStats h3 {
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+}
+
+.incomeList,
+.statsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.incomeList li,
+.statsList li {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 0.95rem;
+}
+
+.passive {
+  color: #8bc34a;
+}
+
+.auto {
+  color: #03a9f4;
+}
+
+.total {
+  font-weight: bold;
+  border-top: 1px solid var(--border);
+  margin-top: 6px;
+  padding-top: 6px;
+}
+
+.statsList li strong {
+  color: var(--primary);
+}

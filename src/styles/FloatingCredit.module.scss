@@ -1,0 +1,48 @@
+.floatingBase {
+  position: absolute;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  pointer-events: none;
+  animation: floatFade 1s ease-out forwards;
+}
+
+/* ───────────── Bubble Types ───────────── */
+
+.manualBubble {
+  background: var(--panel-bg);
+  color: #ffeb3b;
+  top: 10%;              /* Appears slightly above center */
+  right: -50%;
+}
+
+.autoBubble {
+  background: var(--panel-bg);
+  color: #00ff88;
+  top: 30%;              /* Appears slightly below center */
+  right: -115%;
+}
+
+.caseBubble {
+  background: #441177;
+  color: #ff99ff;
+  top: 50%;
+  right: -80px;
+}
+
+/* ───────────── Animation ───────────── */
+@keyframes floatFade {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+}

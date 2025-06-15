@@ -1,0 +1,57 @@
+.container {
+  background: var(--panel-bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  color: var(--fg);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+
+li {
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.perm {
+  background: rgba(33, 150, 243, 0.1);
+  border: 1px solid var(--primary);
+}
+
+.temp {
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid var(--secondary);
+}
+
+.timer {
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.popup {
+  /* existing popup styles… */
+
+  .bonus {
+    color: #6f6;   /* green for bonuses */
+    margin: 8px 0;
+  }
+
+  .antibonus {
+    color: #f66;   /* red for antibonuses */
+    margin: 8px 0;
+  }
+}

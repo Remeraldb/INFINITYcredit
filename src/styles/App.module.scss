@@ -1,0 +1,181 @@
+/* src/styles/App.module.scss */
+
+/* default theme variables */
+:root {
+  --bg:        #111111;
+  --fg:        #EEEEEE;
+  --panel-bg:  #1E1E1E;
+  --border:    #444444;
+  --primary:   #2196F3;
+  --secondary: #03A9F4;
+  --font:      'Segoe UI', sans-serif;
+}
+
+.app {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  gap: 12px;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.tabButton {
+  padding: 10px 16px;
+  background: var(--panel-bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.tabButton:hover {
+  background: #444;
+}
+
+.activeTab {
+  background: transparent !important; /* remove bg fill */
+  color: var(--fg) !important; /* highlight text */
+  border-color: bold var(--border) !important; /* add colored border */
+  font-weight: 600; /* optional: bolder text */
+}
+
+
+/* CONTENT WRAPPER */
+.tabContent {
+  margin-top: 10px;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: center;
+}
+
+/* STATUS ROW */
+.statusRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.levelDisplay,
+.credits,
+.duiktcoins {
+  background: var(--panel-bg);
+  color: var(--fg);
+  border: 2px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-align: center;
+  min-width: 120px;
+}
+
+/* PANELS (e.g. Upgrades, Bonuses, Cases, Achievements, Prestige, Skins) */
+.featuresPanel {
+  background: var(--panel-bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  color: var(--fg);
+  width: 100%;
+  max-width: 500px;
+}
+
+/* FLOATING CREDITS */
+.floatingCredit {
+  position: absolute;
+  font-weight: bold;
+  pointer-events: none;
+  user-select: none;
+  animation: floatUp 1s ease-out forwards;
+}
+
+.floatingCreditClick {
+  color: var(--secondary);
+  right: 20px;
+  top: 100px;
+}
+
+.floatingCreditAuto {
+  color: var(--fg);
+  right: 20px;
+  top: 130px;
+}
+
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-50px); }
+}
+
+/* POPUPS (Achievement, Case, Prestige) */
+.popup {
+  position: fixed;
+  bottom: 20px;
+  background: var(--primary);
+  color: var(--fg);
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 2px solid var(--secondary);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  animation: fadeInOut 2s ease-in-out forwards;
+  z-index: 1000;
+}
+
+@keyframes fadeInOut {
+  0%   { opacity: 0; transform: translateY(20px); }
+  10%  { opacity: 1; transform: translateY(0); }
+  90%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* GLOBAL BUTTONS */
+button {
+  font-family: var(--font);
+  font-weight: bold;
+  background: var(--panel-bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+button:hover:enabled {
+  background: var(--secondary);
+  color: var(--panel-bg);
+}
+
+/* DISABLED */
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.panel {
+  background: var(--panel-bg);
+  color: var(--fg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  width: 100%;
+  max-width: 500px;
+  box-sizing: border-box;
+}
+

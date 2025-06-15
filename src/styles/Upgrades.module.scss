@@ -1,0 +1,34 @@
+.container {
+  background-color: #1e1e1e;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.upgrades {
+  background-color: var(--panel-bg);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  button {
+    background-color: var(--panel-bg);
+    color: var(--fg);
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover:enabled {
+      background-color: --fg;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}

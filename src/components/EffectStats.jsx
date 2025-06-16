@@ -10,8 +10,11 @@ export default function EffectStats({
   casesOpened,
   totalClicks,
   comboCount,
-  prestigeCount
+  prestigeCount,
+  critChance,
+  comboMultiplier,
 }) {
+
   // ─── Income Breakdown ──────────────────────────
   let passiveTotal = 0;
   let autoTotal    = 0;
@@ -35,33 +38,9 @@ export default function EffectStats({
     }
   });
 
-  // ─── Combo Multiplier ──────────────────────────
-  // From upgrades:
-  const upgradeCombo = upgrades
-  .filter(u => u.combo)
-  .reduce((m, u) => m * (1 + u.level * u.combo), 1);
-
-  // From bonuses:
-  const bonusCombo = bonuses
-    .filter(b => b.type === 'comboBoost')
-    .reduce((m, b) => m * b.value, 1);
-  const comboMultiplier = upgradeCombo * bonusCombo;
-
-  // ─── Crit Chance ───────────────────────────────
-  // From upgrades:
-  const upgradeCrit = upgrades
-  .filter(u => u.crit)
-  .reduce((sum, u) => sum + u.level * u.crit, 0);
-
-  // From bonuses:
-  const bonusCrit = bonuses
-    .filter(b => b.type === 'critChance')
-    .reduce((sum, b) => sum + b.value, 0);
-  const critChance = upgradeCrit + bonusCrit;
-
   // ─── Manual Click Gain ─────────────────────────
   let manualGain = clickValue;
-  manualGain *= comboMultiplier;               // apply combo
+  
   // any clickMultiplier bonuses
   bonuses
     .filter(b => b.type === 'clickMultiplier')
@@ -74,9 +53,11 @@ export default function EffectStats({
   const activeBonuses   = bonuses.length;
   const activeAntibons  = antibonuses.length;
 
+  // ─── Combo‐Next Calculation ─────────────────
   const comboUpg = upgrades.find(u => u.combo);
   const comboLvl = comboUpg ? comboUpg.level : 0;
-  const potentialComboBonus = clickValue * comboLvl * (comboCount > 1 ? comboCount - 1 : 0);
+  // Next click’s extra credits:
+  //const potentialComboBonus = clickValue * comboLvl * comboCount;
 
 
   return (
@@ -102,9 +83,9 @@ export default function EffectStats({
           <li>
               🔥 Combo Streak: <strong>{comboCount}</strong>
           </li>
-          <li>
+          {/*<li>
               💥 Combo Bonus Next Click: <strong>{potentialComboBonus.toFixed(1)}</strong>
-          </li>
+          </li>*/}
         </ul>
       </div>
 

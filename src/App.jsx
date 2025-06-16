@@ -57,6 +57,8 @@ export default function App() {
         totalClicks={clicker.totalClicks}
         comboCount={clicker.comboCount}
         prestigeCount={clicker.prestigeCount}
+        critChance={clicker.critChance}
+        comboMultiplier={clicker.comboMultiplier}
       />
 
 

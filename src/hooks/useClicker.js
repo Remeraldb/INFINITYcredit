@@ -4,7 +4,14 @@ import { useState, useEffect, useRef } from 'react';
 import { ACHIEVEMENT_DEFS } from './achievementsDefinitions';
 
 export function useClicker() {
-  
+  //new Audio('.../src/assets/sounds/click.mp3').play()
+
+  const clickAudio = useRef(null);
+  useEffect(() => {
+    clickAudio.current = new Audio('.../assets/sounds/click.mp3');
+    clickAudio.current.volume = 0.8; // adjust volume 0.0–1.0
+  }, []);
+
   const [credits, setCredits] = useState(0);
   const [clickValue, setClickValue] = useState(1);
   const [duiktcoins, setDuiktcoins] = useState(0);
@@ -367,79 +374,83 @@ export function useClicker() {
   // Calculated crit chance (for display or logic)
   const [critChance, setCritChance] = useState(0);
 
+  // Recompute comboMultiplier whenever upgrades or bonuses change
+  useEffect(() => {
+    const upgradeCombo = upgrades
+      .filter(u => u.combo)
+      .reduce((m, u) => m * (1 + u.level * u.combo), 1);
+
+    const bonusCombo = bonuses
+      .filter(b => b.type === 'comboBoost')
+      .reduce((m, b) => m * b.value, 1);
+
+    setComboMultiplier(upgradeCombo * bonusCombo);
+  }, [upgrades, bonuses]);
+
+  // Recompute critChance whenever upgrades or bonuses change
+  useEffect(() => {
+    const upgradeCrit = upgrades
+      .filter(u => u.crit)
+      .reduce((sum, u) => sum + u.level * u.crit, 0);
+
+    const bonusCrit = bonuses
+      .filter(b => b.type === 'critChance')
+      .reduce((sum, b) => sum + b.value, 0);
+
+    setCritChance(upgradeCrit + bonusCrit);
+  }, [upgrades, bonuses]);
+
+
   // ─── CLICK HANDLER
   function handleClick() {
-  const now = Date.now();
+    const audio = clickAudio.current.cloneNode();
+    audio.play().catch(() => {/* ignore play errors */});
 
-  // ─── 1) Combo streak logic ──────────────────
-  if (lastClickTime && now - lastClickTime < 500) {
-    setComboCount(c => c + 1);
-  } else {
-    setComboCount(1);
+    const now = Date.now();
+
+    // 1) Combo streak logic
+    if (lastClickTime && now - lastClickTime < 500) {
+      setComboCount(c => c + 1);
+    } else {
+      setComboCount(1);
+    }
+    setLastClickTime(now);
+
+    // 2) Base gain
+    const base = clickValue;
+
+    // 3) Combo bonus gain (uses our state comboMultiplier)
+    const comboBonusGain = base * (comboMultiplier - 1) * (comboCount > 1 ? comboCount - 1 : 0);
+
+    // 4) Crit roll (uses our state critChance)
+    const isCrit = Math.random() * 100 < critChance;
+    const critMul = isCrit ? 3 : 1;
+
+    // 5) clickMultiplier bonuses
+    const clickMultFactor = bonuses
+      .filter(b => b.type === 'clickMultiplier')
+      .reduce((m, b) => m * (1 + b.value), 1);
+
+    // 6) SlowClick antibonus
+    const slow = antibonuses.find(a => a.type === 'slowClick');
+    const slowFactor = slow ? slow.value : 1;
+
+    // 7) Compute final gain
+    const preCritGain = (base + comboBonusGain) * clickMultFactor * slowFactor;
+    const finalGain   = preCritGain * critMul;
+
+    // 8) Apply it
+    setCredits(c => c + finalGain);
+    setTotalClicks(c => c + 1);
+
+    // 9) Achievements and bubbles
+    unlockAchievements();
+    setCreditBubbles(cb => [
+      ...cb,
+      { id: now, amount: finalGain, type: isCrit ? 'crit' : 'manual' }
+    ]);
   }
-  setLastClickTime(now);
 
-  // ─── 2) Base click value ───────────────────
-  const base = clickValue;
-
-  // ─── 3) Combo multiplier from upgrades & bonuses ─────────────────
-  // From upgrades:
-  const upgradeCombo = upgrades
-    .filter(u => u.combo)
-    .reduce((m, u) => m * (1 + u.level * u.combo), 1);
-
-  // From temporary bonuses:
-  const bonusCombo = bonuses
-    .filter(b => b.type === 'comboBoost')
-    .reduce((m, b) => m * b.value, 1);
-
-  const comboMultiplier = upgradeCombo * bonusCombo;
-
-  // Calculate combo bonus portion:
-  // Only apply extra beyond 1× if comboCount > 1
-  const comboBonusGain = base * (comboMultiplier - 1) * (comboCount > 1 ? comboCount - 1 : 0);
-
-  // ─── 4) Critical chance from upgrades & bonuses ─────────────────
-  // From upgrades:
-  const upgradeCrit = upgrades
-    .filter(u => u.crit)
-    .reduce((sum, u) => sum + u.level * u.crit, 0);
-
-  // From bonuses:
-  const bonusCrit = bonuses
-    .filter(b => b.type === 'critChance')
-    .reduce((sum, b) => sum + b.value, 0);
-
-  const critChance = upgradeCrit + bonusCrit; // percent
-
-  // Roll for crit: true if random < critChance%
-  const isCrit = Math.random() * 100 < critChance;
-  const critMultiplier = isCrit ? 3 : 1; // 3× damage on crit
-
-  // ─── 5) clickMultiplier bonuses (flat multipliers) ───────────
-  const clickMultFactor = bonuses
-    .filter(b => b.type === 'clickMultiplier')
-    .reduce((m, b) => m * (1 + b.value), 1);
-
-  // ─── 6) SlowClick antibonus ─────────────────
-  const slow = antibonuses.find(a => a.type === 'slowClick');
-  const slowFactor = slow ? slow.value : 1;
-
-  // ─── 7) Final gain calculation ──────────────
-  const preCritGain = (base + comboBonusGain) * clickMultFactor * slowFactor;
-  const finalGain  = preCritGain * critMultiplier;
-
-  // ─── 8) Grant credits & track clicks ────────
-  setCredits(c => c + finalGain);
-  setTotalClicks(c => c + 1);
-
-  // ─── 9) Unlock achievements & show bubble ────
-  unlockAchievements();
-  setCreditBubbles(cb => [
-    ...cb,
-    { id: now, amount: finalGain, type: isCrit ? 'crit' : 'manual' }
-  ]);
-}
 
   // ─── Define your two mappings once, at top of file ───────
 const bonusMapping = {
@@ -696,5 +707,7 @@ function openCase(index) {
     totalClicks,
     comboCount,
     prestigeCount,
+    comboMultiplier,
+    critChance,
   };
 }

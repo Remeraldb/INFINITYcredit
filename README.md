@@ -15,15 +15,14 @@
 |--------------|
 | ![Fullscreen view](.github/screenshots/FullscreenClicker_Screenshot.png) |
 
-| Main Clicker |
+| Main Clicker UI |
 |--------------|
 | ![Main Clicker UI](.github/screenshots/MainClickerUI_Screenshot.png) |
 
-| Main Clicker |
+| Tab view with Upgrades tab |
 |--------------|
 | ![Tab view with Upgrades tab selected](.github/screenshots/TabViewUpgrades_Screenshot.png) |
 
-TabViewUpgrades_Screenshot.png
 ---
 
 ## 🎮 How to Play

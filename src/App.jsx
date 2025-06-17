@@ -11,7 +11,14 @@ import AchievementPopup from './components/AchievementPopup';
 import Cases from './features/cases/Cases';
 import ExportImport from './features/export/ExportImport';
 import { useClicker } from './hooks/useClicker';
+import { AnimatePresence, motion } from 'framer-motion';
 import styles from './styles/App.module.scss';
+
+const tabVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+};
 
 export default function App() {
   const clicker = useClicker();
@@ -36,7 +43,7 @@ export default function App() {
 
 
       {/* ── Click Button + Floating Bubbles ── */}
-      <div style={{ position: 'relative', "border-radius":'12px', border: '3px solid var(--fg)', }}>
+      <div style={{ position: 'relative', "borderRadius":'12px', border: '3px solid var(--fg)'}}>
         <ClickButton clicker={clicker} />
         {clicker.creditBubbles.map(b => (
           <FloatingCredit
@@ -77,15 +84,27 @@ export default function App() {
       </div>
 
       {/* ── TAB CONTENT ── */}
-      <div className={styles.tabContent}>
-        {activeTab === 'upgrades' && <Upgrades clicker={clicker} />}
-        {activeTab === 'cases' && <Cases clicker={clicker} />}
-        {activeTab === 'bonuses' && <Bonuses clicker={clicker} />}
-        {activeTab === 'achievements' && <Achievements clicker={clicker} />}
-        {activeTab === 'skins' && <Skins clicker={clicker} />}
-        {activeTab === 'prestige' && <Prestige clicker={clicker} />}
-        {activeTab === 'export' && <ExportImport clicker={clicker} />}
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          variants={tabVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={{ duration: 0.25 }}
+          className={styles.tabContent}
+        >
+          {activeTab === 'upgrades' && <Upgrades clicker={clicker} />}
+          {activeTab === 'cases' && <Cases clicker={clicker} />}
+          {activeTab === 'bonuses' && <Bonuses clicker={clicker} />}
+          {activeTab === 'achievements' && <Achievements clicker={clicker} />}
+          {activeTab === 'skins' && <Skins clicker={clicker} />}
+          {activeTab === 'prestige' && <Prestige clicker={clicker} />}
+          {activeTab === 'export' && <ExportImport clicker={clicker} />}
+        </motion.div>
+      </AnimatePresence>
+
+
 
       {clicker.achievementPopups.map(p => (
         <AchievementPopup key={p.id} name={p.name} />

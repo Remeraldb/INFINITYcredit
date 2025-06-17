@@ -4,13 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import { ACHIEVEMENT_DEFS } from './achievementsDefinitions';
 
 export function useClicker() {
-  //new Audio('.../src/assets/sounds/click.mp3').play()
-
-  const clickAudio = useRef(null);
-  useEffect(() => {
-    clickAudio.current = new Audio('.../assets/sounds/click.mp3');
-    clickAudio.current.volume = 0.8; // adjust volume 0.0–1.0
-  }, []);
 
   const [credits, setCredits] = useState(0);
   const [clickValue, setClickValue] = useState(1);
@@ -57,7 +50,11 @@ export function useClicker() {
 
   const [bonuses, setBonuses] = useState([]);   // list of bonus keys awarded
   const [antibonuses, setAntibonuses] = useState([]);
-  const [creditBubbles, setCreditBubbles] = useState([]); 
+  const [creditBubbles, setCreditBubbles] = useState([]);
+  
+  //fix to one error with bubbleids being the same if the event happened same millisecond
+  let nextBubbleId = 0;
+  
   const [skins, setSkins] = useState([
     {
       name: 'Default',
@@ -231,7 +228,7 @@ export function useClicker() {
 
 
   function triggerAchievementPopup(name) {
-    const id = Date.now();
+    const id = Date.now().toString() + '-' + (nextBubbleId++);
     setAchievementPopups(p => [...p, { id, name }]);
     setTimeout(() => {
       setAchievementPopups(p => p.filter(x => x.id !== id));
@@ -367,7 +364,6 @@ export function useClicker() {
     };
   });
 
-  
   // Calculated combo multiplier (for display or logic)
   const [comboMultiplier, setComboMultiplier] = useState(1);
 
@@ -400,13 +396,10 @@ export function useClicker() {
     setCritChance(upgradeCrit + bonusCrit);
   }, [upgrades, bonuses]);
 
-
   // ─── CLICK HANDLER
   function handleClick() {
-    const audio = clickAudio.current.cloneNode();
-    audio.play().catch(() => {/* ignore play errors */});
-
     const now = Date.now();
+    const id = Date.now().toString() + '-' + (nextBubbleId++);
 
     // 1) Combo streak logic
     if (lastClickTime && now - lastClickTime < 500) {
@@ -447,7 +440,7 @@ export function useClicker() {
     unlockAchievements();
     setCreditBubbles(cb => [
       ...cb,
-      { id: now, amount: finalGain, type: isCrit ? 'crit' : 'manual' }
+      { id: id, amount: finalGain, type: isCrit ? 'crit' : 'manual' }
     ]);
   }
 

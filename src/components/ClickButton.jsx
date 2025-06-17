@@ -1,14 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import styles from '../styles/ClickButton.module.scss';
-import { useClickSound } from '../hooks/useClickSound';
-
+import clickAudio from '../assets/sounds/click.mp3';
 
 export default function ClickButton({ clicker }) {
-  const playClick = useClickSound();
 
   function onClick() {
-    playClick();
+    const clickSound = new Audio(clickAudio);
+    clickSound.volume = 0.05;
+    clickSound.play().catch(err => {
+      console.warn('Audio play error:', err);
+    });
+
     clicker.handleClick();
   }
 

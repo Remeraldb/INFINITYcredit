@@ -23,7 +23,6 @@
 |--------------|
 | ![Tab view with Upgrades tab selected](.github/screenshots/TabViewUpgrades_Screenshot.png) |
 
-TabViewUpgrades_Screenshot.png
 ---
 
 ## 🎮 How to Play
